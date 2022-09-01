@@ -567,7 +567,7 @@ fn build_broker_rolegroup_statefulset(
     let image_version = kafka
         .image_version()
         .context(KafkaVersionParseFailureSnafu)?;
-    let image = format!("docker.stackable.tech/stackable/kafka:{}", image_version);
+    let image = format!("docker.stackable.tech/stackable-experimental/kafka:{}", image_version);
 
     let get_svc_args = get_svc_container_cmd_args(kafka);
 
@@ -621,7 +621,7 @@ fn build_broker_rolegroup_statefulset(
     }
 
     let container_get_svc = ContainerBuilder::new("get-svc")
-        .image("docker.stackable.tech/stackable/tools:0.2.0-stackable0.3.0")
+        .image("docker.stackable.tech/stackable-experimental/tools:0.2.0-stackable0.3.0")
         .command(vec!["bash".to_string()])
         .args(vec![
             "-euo".to_string(),
@@ -644,7 +644,7 @@ fn build_broker_rolegroup_statefulset(
         .build();
 
     cb_prepare
-        .image("docker.stackable.tech/stackable/tools:0.2.0-stackable0.3.0")
+        .image("docker.stackable.tech/stackable-experimental/tools:0.2.0-stackable0.3.0")
         .command(vec![
             "/bin/bash".to_string(),
             "-euo".to_string(),
@@ -772,7 +772,7 @@ fn build_broker_rolegroup_statefulset(
     // Use kcat sidecar for probing container status rather than the official Kafka tools, since they incur a lot of
     // unacceptable perf overhead
     let mut container_kcat_prober = cb_kcat_prober
-        .image("edenhill/kcat:1.7.0")
+        .image("docker.stackable.tech/stackable-experimental/edenhill/kcat:1.7.0")
         .command(vec!["sh".to_string()])
         // Only allow the global load balancing service to send traffic to pods that are members of the quorum
         // This also acts as a hint to the StatefulSet controller to wait for each pod to enter quorum before taking down the next
