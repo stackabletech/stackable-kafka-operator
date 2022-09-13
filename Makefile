@@ -21,8 +21,9 @@ SHELL=/usr/bin/env bash -euo pipefail
 
 ## Docker related targets
 docker-build:
-	docker buildx build --force-rm --build-arg VERSION=${VERSION} -t "docker.stackable.tech/stackable-experimental/kafka-operator:${VERSION}" -f docker/Dockerfile --load .
-
+	docker buildx create --name builder --use
+	docker buildx build --force-rm --build-arg VERSION=${VERSION} -t "docker.stackable.tech/stackable-experimental/kafka-operator:${VERSION}" -f docker/Dockerfile --platform linux/arm64,linux/amd64 --push .
+	docker buildx rm builder
 docker-build-latest: docker-build
 	docker tag "docker.stackable.tech/stackable/kafka-operator:${VERSION}" \
 	           "docker.stackable.tech/stackable/kafka-operator:latest"
